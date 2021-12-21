@@ -335,7 +335,11 @@ private class HeartbeatStorageFake: HeartbeatStorageProtocol {
 // MARK: - Assertions
 
 func assertEqualPayloadStrings(_ encoded: String, _ literal: String) throws {
-  let encodedData = try XCTUnwrap(Data(base64Encoded: encoded))
+  var encodedData = try XCTUnwrap(Data(base64URLEncoded: encoded))
+  if encodedData.count > 0 {
+    encodedData = try! encodedData.unzipped()
+  }
+
   let literalData = try XCTUnwrap(literal.data(using: .utf8))
 
   let decoder = JSONDecoder()
